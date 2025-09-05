@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>เซอร์ไพรส์วันเกิด 💖</title>
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: url('BG_Duo.jpg') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  color: white;
+  text-align: center;
+}
+
+.card {
+  display: none;
+  background: rgba(0,0,0,0.6);
+  padding: 20px;
+  margin: 50px auto;
+  width: 80%;
+  max-width: 450px;
+  border-radius: 20px;
+}
+
+.show {
+  display: block;
+  animation: fadeIn 1s;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #ff69b4;
+  color: white;
+  font-size: 16px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+input {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  width: 80%;
+  margin-top: 10px;
+}
+
+video {
+  max-width: 90%;
+  border-radius: 15px;
+  margin-top: 20px;
+  display: none;
+}
+
+#loveLetter {
+  display: none;
+  background: rgba(255,255,255,0.9);
+  color: black;
+  padding: 20px;
+  border-radius: 15px;
+  max-width: 400px;
+  margin: 20px auto;
+  text-align: left;
+  white-space: pre-wrap;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+</style>
+</head>
+<body>
+
+<!-- หน้าแรก -->
+<div id="start" class="card show">
+  <h1>สุขสันต์วันเกิดนะคะอ้วน 🎂💕</h1>
+  <p>เค้ามีเกมเล็กๆน้อยๆมาให้เธอเล่นก่อน</p>
+    <p>🚨ก่อนกดเล่น🚨</p>
+   <p>กดเปิดเพลงก่อนนะคะ🥰</p>
+  <button onclick="startGame()">เริ่มเล่น</button>
+  <button onclick="playMusic()">เปิดเพลง 🎶</button>
+</div>
+
+<!-- คำถามพิมพ์ตอบ -->
+<div id="q1" class="card">
+    <h2>ข้อ 1: เรารู้จักกันครั้งแรกที่ไหน? 💕</h2>
+    <input type="text" id="answer1" placeholder="พิมพ์คำตอบ...">
+    <button onclick="saveAnswer('q1','answer1','q2')">ส่งคำตอบ</button>
+  </div>
+
+  <div id="q2" class="card">
+    <h2>ข้อ 2: อะไรที่ทำให้เธอสนใจในตัวเค้า? ✨</h2>
+    <input type="text" id="answer2" placeholder="พิมพ์คำตอบ...">
+    <button onclick="saveAnswer('q2','answer2','q3')">ส่งคำตอบ</button>
+  </div>
+
+ <div id="q3" class="card">
+    <h2>ข้อ 3: อะไรที่เค้าทำแล้ว แล้วเธอชอบหรือรู้สึกมีความสุข? 😎</h2>
+    <input type="text" id="answer3" placeholder="พิมพ์คำตอบ...">
+    <button onclick="saveAnswer('q3','answer3','q4')">ส่งคำตอบ</button>
+  </div>
+
+<div id="q4" class="card">
+    <h2>ข้อ 4: อะไรคือความทรงจำของเราที่ทำให้เธอยิ้มทุกครั้ง? 🌻</h2>
+    <input type="text" id="answer4" placeholder="พิมพ์คำตอบ...">
+    <button onclick="saveAnswer('q4','answer4','q5')">ส่งคำตอบ</button>
+  </div>
+
+  <div id="q5" class="card">
+    <h2>ข้อ 5: สิ่งที่เธออยากบอกเราแต่ไม่เคยบอกคืออะไร? 🤍</h2>
+    <input type="text" id="answer5" placeholder="พิมพ์คำตอบ...">
+    <button onclick="saveAnswer('q5','answer5','surprise')">ส่งคำตอบ</button>
+  </div>
+
+<!-- หน้าเซอร์ไพรส์ -->
+<div id="surprise" class="card">
+  <h2>เซอร์ไพรส์! 🎉💖</h2>
+  <p id="surpriseText"></p>
+
+  <!-- ปุ่มเปิดจดหมายรัก -->
+  <button onclick="toggleLetter()">อ่านจดหมายรัก 💌</button>
+  <div id="loveLetter">
+    <p id="letterText"></p>
+  </div>
+
+  <!-- ปุ่มเล่นวิดีโอ -->
+  <button onclick="playVideo()">เปิดวิดีโอเซอร์ไพรส์ 🎬</button>
+  <video id="surpriseVideo" controls>
+    <source src="0509_cen.mp4" type="video/mp4">
+    เบราว์เซอร์ไม่รองรับการเล่นวิดีโอ
+  </video>
+
+  <!-- แสดงคำตอบทั้งหมด -->
+  <div id="answersBox"></div>
+</div>
+
+<!-- เพลง -->
+<audio id="bgMusic" loop>
+  <source src="Music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let answers = [];
+let bgMusic = document.getElementById("bgMusic");
+let video = document.getElementById("surpriseVideo");
+let letter = document.getElementById("loveLetter");
+
+const surpriseMessage = `สุขสันต์วันเกิดนะคะ 💝
+วันนี้เป็นวันที่พิเศษของเธอ เค้าขอให้เธอมีความสุขมากๆ ยิ้มมากๆ และหัวเราะทุกวันนะ 
+เค้าไม่รู้จะทำอะไรให้เป็นของขวัญกับเธอ เค้าเลยทำเซอร์ไพรส์เล็กๆ น้อยๆ ที่เค้าตั้งใจทำให้เธอโดยเฉพาะเลย 🎂🌸✨`;
+
+const loveLetter = `ถึงเธอคนที่แสนพิเศษของเค้า 💕  
+
+         ก่อนอื่น เค้าอยากบอกขอบคุณเธอ  ขอบคุณที่อยู่เคียงข้างเค้าเสมอ ไม่ว่าเค้าจะทำตัวแย่ ขี้โมโห หรือนอยเธอแค่ไหน เธอก็ยังอดทน เข้าใจ และคอยให้กำลังใจเค้าเสมอ🌸  
+                    
+      เค้าขอโทษด้วยนะ  บางทีเค้าอาจก็งอแง ง้องแง้ง 
+ทำให้เธอหงุดหงิดหรือเสียใจ หรือไม่ได้ใส่ใจเธอเท่าที่ควร  
+เค้าอาจไม่ได้สมบูรณ์แบบ แต่สัญญาว่าจะพยายามเป็นผู้หญิงที่เข้าใจและรักเธอมากขึ้นทุกวัน🥰  
+
+      เค้าขอบคุณเธอมากๆ สำหรับทุกความทรงจำ ทุกเสียงหัวเราะ ทุกโมเมนต์เล็ก ๆ ที่เธอให้เค้า เค้าอยากสร้างความทรงจำดีๆ กับเธอแบบนี้ไปเรื่อยๆ และไม่ว่าอะไรจะเกิดขึ้น เค้าจะอยู่ข้างเธอเสมอ 💞  
+      
+     ในทุกๆวัน เธอคือเหตุผลของรอยยิ้มของเค้า ขอบคุณที่เป็นแฟนที่น่ารักที่สุดในโลก รักเธอมากที่สุดในโลก 
+และจะรักตลอดไปเล้ย 💌✨
+         
+                           สุขสันต์วันเกิดนะคะอ้ายอ้วนของเค้า 🎂✨
+                                                                   
+                                           Maple🍁`;
+
+function startGame(){
+  document.getElementById("start").style.display = "none";
+  document.getElementById("q1").classList.add("show");
+}
+
+function playMusic(){
+  bgMusic.play();
+}
+
+function saveAnswer(qid, inputId, nextId){
+  let ans = document.getElementById(inputId).value.trim();
+  answers.push({question: qid, answer: ans});
+
+  document.getElementById(qid).style.display = "none";
+  if(nextId === "surprise"){
+    showSurprise();
+  } else {
+    document.getElementById(nextId).classList.add("show");
+  }
+}
+
+function typeWriter(elementId, text, speed=50){
+  let i = 0;
+  document.getElementById(elementId).innerHTML = "";
+  let timer = setInterval(() => {
+    if(i < text.length){
+      document.getElementById(elementId).innerHTML += text.charAt(i);
+      i++;
+    } else {
+      clearInterval(timer);
+    }
+  }, speed);
+}
+
+function showSurprise(){
+  document.getElementById("surprise").classList.add("show");
+
+  // แสดงคำตอบ
+  let resultBox = document.getElementById("answersBox");
+  resultBox.innerHTML = "<h3>คำตอบของเธอทั้งหมด 💌</h3>";
+  answers.forEach((a,i)=>{
+    resultBox.innerHTML += `<p>ข้อ ${i+1}: ${a.answer}</p>`;
+  });
+
+  // typewriter effect สำหรับข้อความเซอร์ไพรส์
+  typeWriter("surpriseText", surpriseMessage);
+}
+
+function toggleLetter(){
+  if(letter.style.display === "block"){
+    letter.style.display = "none";
+  } else {
+    letter.style.display = "block";
+    typeWriter("letterText", loveLetter);
+  }
+}
+
+function playVideo(){
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
+
+  video.style.display = "block";
+  video.play();
+}
+</script>
+
+</body>
+</html>
